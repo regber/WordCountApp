@@ -19,24 +19,16 @@ namespace WordCountApp
             {
                 using (StreamReader sr = new StreamReader(path))
                 {
-                    
-                    while(!sr.EndOfStream)
+                
+                    while (!sr.EndOfStream)
                     {
                         var line = await sr.ReadLineAsync();
-                        var wordsInLine = GetSeparatedWords(line, @"[a-я]*[a-я][a-я]*");
-
-                        foreach (var word in wordsInLine)
-                        {
-                            if(countedWords.ContainsKey(word))
-                                countedWords[word]++;
-                            else
-                                countedWords.Add(word, 1);
-                        }
+                        ProcessLineToWords(countedWords, line);
                     }
 
                     var orderCountedWords = countedWords.OrderByDescending(pair => pair.Value);
 
-                SavePairsCollectionToFile(orderCountedWords, "CountedWords.txt");
+                    SavePairsCollectionToFile(orderCountedWords, "CountedWords.txt");
                 }
             }
 
@@ -52,14 +44,27 @@ namespace WordCountApp
             return separator.Matches(text).Select(m => m.Value.ToLower());
         }
 
-        private static void SavePairsCollectionToFile<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> pairsCollection,string path)
+        private static async void SavePairsCollectionToFile<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> pairsCollection,string path)
         {
             using(StreamWriter sw = new StreamWriter(path))
             {
                 foreach(var pair in pairsCollection)
                 {
-                    sw.WriteLine($"{pair.Key}-{pair.Value}");
+                    await sw.WriteLineAsync($"{pair.Key}-{pair.Value}");
                 }
+            }
+        }
+
+        private static void ProcessLineToWords(IDictionary<string, int> countedWords, string line)
+        {
+            var wordsInLine = GetSeparatedWords(line, @"[a-я]*[a-я][a-я]*");
+
+            foreach (var word in wordsInLine)
+            {
+                if (countedWords.ContainsKey(word))
+                    countedWords[word]++;
+                else
+                    countedWords.Add(word, 1);
             }
         }
     }
