@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "ey9WVfkSPv/P1CorS4/8+qWU+YXOyxKZb1Os4dqap8xSC+u4/RNMrBlggSgW1z1VqhVSh12uJktWVLIdBwU13Q==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Zevas\\source\\repos\\WordCountApp\\WordCountApp\\WordCountApp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Zevas\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.23\\microsoft.netcore.app.host.win-x64.3.1.23.nupkg.sha512"
+  ],
+  "logs": []
+}
