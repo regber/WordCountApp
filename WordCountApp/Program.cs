@@ -11,13 +11,12 @@ namespace WordCountApp
     {
         static async Task Main(string[] filePaths)
         {
+            Dictionary<string, int> countedWords = new Dictionary<string, int>();
 
-
-                Console.WriteLine("Start!");
+            Console.WriteLine("Start!");
 
             foreach (var path in filePaths)
             {
-                //Console.WriteLine(path); 
                 using (StreamReader sr = new StreamReader(path))
                 {
                     
@@ -28,10 +27,16 @@ namespace WordCountApp
 
                         foreach (var word in wordsInLine)
                         {
-                            Console.WriteLine(word);
+                            if(countedWords.ContainsKey(word))
+                                countedWords[word]++;
+                            else
+                                countedWords.Add(word, 1);
                         }
-                        Console.ReadKey();
                     }
+
+                    var orderCountedWords = countedWords.OrderByDescending(pair => pair.Value);
+
+                SavePairsCollectionToFile(orderCountedWords, "CountedWords.txt");
                 }
             }
 
@@ -44,7 +49,18 @@ namespace WordCountApp
         {
             Regex separator = new Regex(regexPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-            return separator.Matches(text).Select(m => m.Value);
+            return separator.Matches(text).Select(m => m.Value.ToLower());
+        }
+
+        private static void SavePairsCollectionToFile<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> pairsCollection,string path)
+        {
+            using(StreamWriter sw = new StreamWriter(path))
+            {
+                foreach(var pair in pairsCollection)
+                {
+                    sw.WriteLine($"{pair.Key}-{pair.Value}");
+                }
+            }
         }
     }
 }
