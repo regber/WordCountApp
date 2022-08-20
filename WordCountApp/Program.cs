@@ -22,8 +22,8 @@ namespace WordCountApp
                 
                     while (!sr.EndOfStream)
                     {
-                        var line = await sr.ReadLineAsync();
-                        ProcessLineToWords(countedWords, line);
+                        var text = await sr.ReadToEndAsync();
+                        ProcessTextToWords(countedWords, text);
                     }
 
                     var orderCountedWords = countedWords.OrderByDescending(pair => pair.Value);
@@ -55,11 +55,11 @@ namespace WordCountApp
             }
         }
 
-        private static void ProcessLineToWords(IDictionary<string, int> countedWords, string line)
+        private static void ProcessTextToWords(IDictionary<string, int> countedWords, string line)
         {
-            var wordsInLine = GetSeparatedWords(line, @"[a-я]*[a-я][a-я]*");
+            var wordsInText = GetSeparatedWords(line, @"[a-я]*[a-я][a-я]*");
 
-            foreach (var word in wordsInLine)
+            foreach (var word in wordsInText)
             {
                 if (countedWords.ContainsKey(word))
                     countedWords[word]++;
