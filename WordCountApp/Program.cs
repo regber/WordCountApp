@@ -57,7 +57,7 @@ namespace WordCountApp
 
         private static void ProcessTextToWords(IDictionary<string, int> countedWords, string text)
         {
-            var wordsInText = GetSeparatedWords(text, @"[a-я]*[a-я][a-я]*");
+            var wordsInText = GetSeparatedWords(text, @"\b[a-я]*([a-я]|[-'])[a-я]*\b");
 
             foreach (var word in wordsInText)
             {
