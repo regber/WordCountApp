@@ -39,7 +39,7 @@ namespace WordCountApp
 
         private static IEnumerable<string> GetSeparatedWords(string text)
         {
-            Regex separator = new Regex(@"(?<tag><\S*>)|(?<word>\b[a-я]*([a-я]|[-'])[a-я]*\b)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            Regex separator = new Regex(@"(?<tag>(<(\S*?)>)|(<+?.*?>+?))|(?<word>([a-я']{1,}))", RegexOptions.Compiled|RegexOptions.IgnoreCase);
 
             return separator.Matches(text).Where(m=>m.Groups["word"].Value !=string.Empty).Select(m => m.Value.ToLower());
         }
