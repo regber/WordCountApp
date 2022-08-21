@@ -11,33 +11,16 @@ namespace WordCountApp
     {
         static async Task Main(string[] filePaths)
         {
-            Dictionary<string, int> countedWords = new Dictionary<string, int>();
-
             Console.WriteLine("Start!");
 
-            foreach (var path in filePaths)
-            {
-                using (StreamReader sr = new StreamReader(path))
-                {
-                
-                    while (!sr.EndOfStream)
-                    {
-                        var text = await sr.ReadToEndAsync();
-                        ProcessTextToWords(countedWords, text);
-                    }
-
-                    var orderCountedWords = countedWords.OrderByDescending(pair => pair.Value);
-
-                    SavePairsCollectionToFile(orderCountedWords, "CountedWords.txt");
-                }
-            }
+            await CountingWordsInFiles(filePaths);
 
             Console.WriteLine("Completed!");
 
             Console.ReadLine();
         }
 
-        private static IEnumerable<string> GetSeparatedWords(string text)
+        private static IEnumerable<string> GetWords(string text)
         {
             Regex separator = new Regex(@"(?<tag>(<(\S*?)>)|(<+?.*?>+?))|(?<word>([a-я']{1,}))", RegexOptions.Compiled|RegexOptions.IgnoreCase);
 
@@ -46,25 +29,47 @@ namespace WordCountApp
 
         private static async void SavePairsCollectionToFile<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> pairsCollection,string path)
         {
-            using(StreamWriter sw = new StreamWriter(path))
+            using(StreamWriter writer = new StreamWriter(path))
             {
                 foreach(var pair in pairsCollection)
                 {
-                    await sw.WriteLineAsync($"{pair.Key}-{pair.Value}");
+                    await writer.WriteLineAsync($"{pair.Key}-{pair.Value}");
                 }
             }
         }
 
-        private static void ProcessTextToWords(IDictionary<string, int> countedWords, string text)
+        private static void CountingUniqueWords(string text, IDictionary<string, int> countedWords)
         {
-            var wordsInText = GetSeparatedWords(text);
+            var words = GetWords(text);
 
-            foreach (var word in wordsInText)
+            foreach (var word in words)
             {
                 if (countedWords.ContainsKey(word))
                     countedWords[word]++;
                 else
                     countedWords.Add(word, 1);
+            }
+        }
+
+        private static async Task CountingWordsInFiles(string[] filePaths)
+        {
+            Dictionary<string, int> countedWords = new Dictionary<string, int>();
+
+            foreach (var path in filePaths)
+            {
+                using (StreamReader reader = new StreamReader(path))
+                {
+
+                    while (!reader.EndOfStream)
+                    {
+                        var text = await reader.ReadToEndAsync();
+                        CountingUniqueWords(text, countedWords);
+                    }
+
+                    var orderCountedWords = countedWords.OrderByDescending(pair => pair.Value);
+
+                    SavePairsCollectionToFile(orderCountedWords, $"Counted words in {Path.GetFileNameWithoutExtension(path)}.txt");
+                }
             }
         }
     }
