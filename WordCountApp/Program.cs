@@ -37,11 +37,11 @@ namespace WordCountApp
             Console.ReadLine();
         }
 
-        private static IEnumerable<string> GetSeparatedWords(string text,string regexPattern)
+        private static IEnumerable<string> GetSeparatedWords(string text)
         {
-            Regex separator = new Regex(regexPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            Regex separator = new Regex(@"(?<tag><\S*>)|(?<word>\b[a-я]*([a-я]|[-'])[a-я]*\b)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-            return separator.Matches(text).Select(m => m.Value.ToLower());
+            return separator.Matches(text).Where(m=>m.Groups["word"].Value !=string.Empty).Select(m => m.Value.ToLower());
         }
 
         private static async void SavePairsCollectionToFile<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> pairsCollection,string path)
@@ -57,7 +57,7 @@ namespace WordCountApp
 
         private static void ProcessTextToWords(IDictionary<string, int> countedWords, string text)
         {
-            var wordsInText = GetSeparatedWords(text, @"\b[a-я]*([a-я]|[-'])[a-я]*\b");
+            var wordsInText = GetSeparatedWords(text);
 
             foreach (var word in wordsInText)
             {
