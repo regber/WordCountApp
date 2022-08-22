@@ -9,6 +9,7 @@ namespace WordCountApp
 {
     class Program
     {
+        
         static async Task Main(string[] filePaths)
         {
             Console.WriteLine("Start!");
@@ -20,6 +21,11 @@ namespace WordCountApp
             Console.ReadLine();
         }
 
+        /// <summary>
+        /// Извлекает список отдельных слов из переданного <paramref name="text"></paramref>
+        /// </summary>
+        /// <param name="text">Текст из которого будут извлечены отдельные слова</param>
+        /// <returns>Возвращает список содержащий отдельные слова из переданного <paramref name="text"></paramref></returns>
         private static IEnumerable<string> GetWords(string text)
         {
             Regex separator = new Regex(@"(?<tag>(<(\S*?)>)|(<+?.*?>+?))|(?<word>([a-я']{1,}))", RegexOptions.Compiled|RegexOptions.IgnoreCase);
@@ -27,7 +33,14 @@ namespace WordCountApp
             return separator.Matches(text).Where(m=>m.Groups["word"].Value !=string.Empty).Select(m => m.Value.ToLower());
         }
 
-        private static async void SavePairsCollectionToFile<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> pairsCollection,string path)
+        /// <summary>
+        /// Сохраняет словарь слов <paramref name="pairsCollection"/> в файл по указаному <paramref name="path"/> в виде списка слов с указанным напротив кол-вом этих слов
+        /// </summary>
+        /// <typeparam name="TKey">Ключ хранящий слово</typeparam>
+        /// <typeparam name="TValue">Значение хранящие количество слов</typeparam>
+        /// <param name="pairsCollection">Словарь хранящий слова в качестве ключей и их количество в качестве значениий</param>
+        /// <param name="path">Место сохранения файла</param>
+        private static async void SaveWordDictionaryToFile<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> pairsCollection,string path)
         {
             using(StreamWriter writer = new StreamWriter(path))
             {
@@ -38,6 +51,11 @@ namespace WordCountApp
             }
         }
 
+        /// <summary>
+        /// Подсчитывает количество уникальных слов в <paramref name="text"/> и сохраняет их в <paramref name="countedWords"></paramref>
+        /// </summary>
+        /// <param name="text">Текст в котором необходимо посчитать слова</param>
+        /// <param name="countedWords">Словарь в который сохраняется перечень слов, где в качестве ключа импользуется слово, а в качестве значения кол-во слов в переданном <paramref name="text"/></param>
         private static void CountingUniqueWords(string text, IDictionary<string, int> countedWords)
         {
             var words = GetWords(text);
@@ -51,6 +69,11 @@ namespace WordCountApp
             }
         }
 
+        /// <summary>
+        /// Подсчитывает количество слов в текстовых файлах
+        /// </summary>
+        /// <param name="filePaths">Массив путей к текстовым файлам</param>
+        /// <returns></returns>
         private static async Task CountingWordsInFiles(string[] filePaths)
         {
             Dictionary<string, int> countedWords = new Dictionary<string, int>();
@@ -68,7 +91,7 @@ namespace WordCountApp
 
                     var orderCountedWords = countedWords.OrderByDescending(pair => pair.Value);
 
-                    SavePairsCollectionToFile(orderCountedWords, $"Counted words in {Path.GetFileNameWithoutExtension(path)}.txt");
+                    SaveWordDictionaryToFile(orderCountedWords, $"Counted words in {Path.GetFileNameWithoutExtension(path)}.txt");
                 }
             }
         }
