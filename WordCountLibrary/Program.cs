@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Collections.Concurrent;
 
 namespace WordCountLibrary
 {
     public static class WordCounter
     {
-
+        
 
         /// <summary>
         /// Извлекает список отдельных слов из переданного <paramref name="text"></paramref>
@@ -30,16 +31,13 @@ namespace WordCountLibrary
         /// </summary>
         /// <param name="text">Текст в котором необходимо посчитать слова</param>
         /// <param name="countedWords">Словарь в который сохраняется перечень слов, где в качестве ключа импользуется слово, а в качестве значения кол-во слов в переданном <paramref name="text"/></param>
-        private static void CountingUniqueWords(string text, IDictionary<string, int> countedWords)
+        private static void CountingUniqueWords(string text, ConcurrentDictionary<string, int> countedWords)
         {
             var words = GetWords(text);
 
             foreach (var word in words)
             {
-                if (countedWords.ContainsKey(word))
-                    countedWords[word]++;
-                else
-                    countedWords.Add(word, 1);
+                countedWords.AddOrUpdate(word, 1, (key, oldVal) => oldVal + 1);
             }
         }
 
@@ -50,21 +48,30 @@ namespace WordCountLibrary
         /// <returns></returns>
         private static Dictionary<string, int> CountingWordsInFile(string filePath)
         {
-            Dictionary<string, int> countedWords = new Dictionary<string, int>();
+            var countedWords = new Dictionary<string, int>();
+            var concurDir = new ConcurrentDictionary<string, int>();
 
+            var lines = File.ReadAllLines(filePath);
 
-            using (StreamReader reader = new StreamReader(filePath))
+            string[] textBlocks;
+
+            var textBlockSize = 1000;
+            var textBlockCount = (int)Math.Ceiling((double)(lines.Length / textBlockSize))+1;
+
+            textBlocks = new string[textBlockCount];
+
+            Parallel.For(0, textBlockCount, i => 
             {
+                var textBlock = string.Concat(lines.Skip(i*textBlockSize).Take(textBlockSize));
+                textBlocks[i] = textBlock;
+            });
 
-                while (!reader.EndOfStream)
-                {
-                    var text = reader.ReadToEnd();
-                    CountingUniqueWords(text, countedWords);
-                }
+            Parallel.For(0, textBlockCount, i => 
+            {
+                CountingUniqueWords(textBlocks[i], concurDir);
+            });
 
-                countedWords = countedWords.OrderByDescending(pair => pair.Value).ToDictionary(kvp=>kvp.Key,kvp=>kvp.Value);
-
-            }
+            countedWords = concurDir.OrderByDescending(pair => pair.Value).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             return countedWords;
         }

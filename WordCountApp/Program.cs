@@ -10,12 +10,18 @@ namespace WordCountApp
 {
     class Program
     {
+        static Stopwatch sw = new Stopwatch();
+
         static void Main(string[] filePaths)
         {
-
+            sw.Start();
             Console.WriteLine("Start!");
 
             CountingWordsInFiles(filePaths);
+
+            sw.Stop();
+
+            Console.WriteLine($"Time spent: {sw.ElapsedMilliseconds} milliseconds");
 
             Console.WriteLine("Completed!");
 
