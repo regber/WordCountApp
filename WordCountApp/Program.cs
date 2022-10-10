@@ -15,8 +15,6 @@ namespace WordCountApp
 
             Console.WriteLine("Start!");
 
-            filePaths = new string[] { "tolstoj_lew_nikolaewich-text_0073.fb2" };
-
             CountingWordsInFiles(filePaths);
 
             Console.WriteLine("Completed!");
