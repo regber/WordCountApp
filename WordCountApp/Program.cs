@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace WordCountApp
 {
@@ -11,7 +12,10 @@ namespace WordCountApp
     {
         static void Main(string[] filePaths)
         {
+
             Console.WriteLine("Start!");
+
+            filePaths = new string[] { "tolstoj_lew_nikolaewich-text_0073.fb2" };
 
             CountingWordsInFiles(filePaths);
 
@@ -31,13 +35,13 @@ namespace WordCountApp
 
             var methods = type.GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
 
-            var desiredMethod = methods[2];
+            var countingWordsInFileMethod = methods[2];
 
             foreach (var filePath in filePaths)
             {
-                var wordDictionary = (Dictionary<string, int>)desiredMethod.Invoke(null, new object[] { filePath });
+                var wordDictionary = (Dictionary<string, int>)countingWordsInFileMethod.Invoke(null, new object[] { filePath });
 
-                SaveWordDictionaryToFile<string, int>(wordDictionary, $"Counted words in {Path.GetFileNameWithoutExtension(filePath)}.txt");
+                SaveWordDictionaryToFile(wordDictionary, $"Counted words in {Path.GetFileNameWithoutExtension(filePath)}.txt");
             }
         }
 
