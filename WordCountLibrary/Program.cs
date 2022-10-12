@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace WordCountLibrary
 {
@@ -53,22 +54,13 @@ namespace WordCountLibrary
 
             var lines = File.ReadAllLines(filePath);
 
-            string[] textBlocks;
-
             var textBlockSize = 1000;
             var textBlockCount = (int)Math.Ceiling((double)(lines.Length / textBlockSize))+1;
 
-            textBlocks = new string[textBlockCount];
-
             Parallel.For(0, textBlockCount, i => 
             {
-                var textBlock = string.Concat(lines.Skip(i*textBlockSize).Take(textBlockSize));
-                textBlocks[i] = textBlock;
-            });
-
-            Parallel.For(0, textBlockCount, i => 
-            {
-                CountingUniqueWords(textBlocks[i], concurDir);
+                var textBlock = string.Concat(lines.Skip(i* textBlockSize).Take(textBlockSize));
+                CountingUniqueWords(textBlock, concurDir);
             });
 
             countedWords = concurDir.OrderByDescending(pair => pair.Value).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
