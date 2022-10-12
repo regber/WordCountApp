@@ -72,12 +72,6 @@ namespace WordCountApp
         /// <returns></returns>
         private static void CountingWordsInFilesMultThrd(string[] filePaths)
         {
-            var type = typeof(WordCounter);
-
-            var methods = type.GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-
-            var countingWordsInFileMethod = methods[2];
-
             wordDictionaries.Clear();
 
             foreach (var filePath in filePaths)
