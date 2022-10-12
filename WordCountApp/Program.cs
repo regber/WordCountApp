@@ -11,17 +11,33 @@ namespace WordCountApp
     class Program
     {
         static Stopwatch sw = new Stopwatch();
+        static Stopwatch swMultThrd = new Stopwatch();
+
+        static List<Dictionary<string, int>> wordDictionaries = new List<Dictionary<string, int>>();
 
         static void Main(string[] filePaths)
         {
-            sw.Start();
             Console.WriteLine("Start!");
+
+            //В один поток
+            sw.Start();
 
             CountingWordsInFiles(filePaths);
 
             sw.Stop();
 
-            Console.WriteLine($"Time spent: {sw.ElapsedMilliseconds} milliseconds");
+            //В несколько потоков
+            swMultThrd.Start();
+
+            CountingWordsInFilesMultThrd(filePaths);
+
+            swMultThrd.Stop();
+
+            Console.WriteLine($"Time spent for one thread: {sw.ElapsedMilliseconds} milliseconds");
+            Console.WriteLine($"Time spent for multi thread: {swMultThrd.ElapsedMilliseconds} milliseconds");
+            Console.WriteLine($"Time spent delta: {Math.Abs(sw.ElapsedMilliseconds- swMultThrd.ElapsedMilliseconds)} milliseconds");
+
+            SaveWordDictionariesToFiles(wordDictionaries, filePaths);
 
             Console.WriteLine("Completed!");
 
@@ -41,11 +57,32 @@ namespace WordCountApp
 
             var countingWordsInFileMethod = methods[2];
 
+            wordDictionaries.Clear();
+
             foreach (var filePath in filePaths)
             {
-                var wordDictionary = (Dictionary<string, int>)countingWordsInFileMethod.Invoke(null, new object[] { filePath });
+                wordDictionaries.Add((Dictionary<string, int>)countingWordsInFileMethod.Invoke(null, new object[] { filePath }));
+            }
+        }
 
-                SaveWordDictionaryToFile(wordDictionary, $"Counted words in {Path.GetFileNameWithoutExtension(filePath)}.txt");
+        /// <summary>
+        /// Подсчитывает количество слов в текстовых файлах  в несколько потоков
+        /// </summary>
+        /// <param name="filePaths">Массив путей к текстовым файлам</param>
+        /// <returns></returns>
+        private static void CountingWordsInFilesMultThrd(string[] filePaths)
+        {
+            var type = typeof(WordCounter);
+
+            var methods = type.GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+
+            var countingWordsInFileMethod = methods[2];
+
+            wordDictionaries.Clear();
+
+            foreach (var filePath in filePaths)
+            {
+                wordDictionaries.Add(WordCounter.CountingWordsInFileMultThrd(filePath));
             }
         }
 
@@ -57,15 +94,19 @@ namespace WordCountApp
         /// <typeparam name="TValue">Значение хранящие количество слов</typeparam>
         /// <param name="pairsCollection">Словарь хранящий слова в качестве ключей и их количество в качестве значениий</param>
         /// <param name="path">Место сохранения файла</param>
-        private static void SaveWordDictionaryToFile<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> pairsCollection, string path)
+        private static void SaveWordDictionariesToFiles<TKey, TValue>(List<Dictionary<TKey, TValue>> pairsCollections, string[] paths)
         {
-            using (StreamWriter writer = new StreamWriter(path))
+            for(int idx=0; idx < pairsCollections.Count; idx++)
             {
-                foreach (var pair in pairsCollection)
+                using (StreamWriter writer = new StreamWriter($"Counted words in {Path.GetFileNameWithoutExtension(paths[idx])}.txt"))
                 {
-                    writer.WriteLine($"{pair.Key}-{pair.Value}");
+                    foreach (var pair in pairsCollections[idx])
+                    {
+                        writer.WriteLine($"{pair.Key}-{pair.Value}");
+                    }
                 }
             }
+
         }
     }
 }

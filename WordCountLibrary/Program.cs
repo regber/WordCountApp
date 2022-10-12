@@ -52,14 +52,33 @@ namespace WordCountLibrary
             var countedWords = new Dictionary<string, int>();
             var concurDir = new ConcurrentDictionary<string, int>();
 
+            var text = File.ReadAllText(filePath);
+
+            CountingUniqueWords(text, concurDir);
+
+            countedWords = concurDir.OrderByDescending(pair => pair.Value).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            return countedWords;
+        }
+
+        /// <summary>
+        /// Подсчитывает количество слов в текстовом файле в несколько потоков
+        /// </summary>
+        /// <param name="filePath">путь к текстовому файлу</param>
+        /// <returns></returns>
+        public static Dictionary<string, int> CountingWordsInFileMultThrd(string filePath)
+        {
+            var countedWords = new Dictionary<string, int>();
+            var concurDir = new ConcurrentDictionary<string, int>();
+
             var lines = File.ReadAllLines(filePath);
 
             var textBlockSize = 1000;
-            var textBlockCount = (int)Math.Ceiling((double)(lines.Length / textBlockSize))+1;
+            var textBlockCount = (int)Math.Ceiling((double)(lines.Length / textBlockSize)) + 1;
 
-            Parallel.For(0, textBlockCount, i => 
+            Parallel.For(0, textBlockCount, i =>
             {
-                var textBlock = string.Concat(lines.Skip(i* textBlockSize).Take(textBlockSize));
+                var textBlock = string.Concat(lines.Skip(i * textBlockSize).Take(textBlockSize));
                 CountingUniqueWords(textBlock, concurDir);
             });
 

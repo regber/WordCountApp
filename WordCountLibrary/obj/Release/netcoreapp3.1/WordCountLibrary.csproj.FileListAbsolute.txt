@@ -1,0 +1,10 @@
+C:\Users\Zevas\source\repos\WordCountApp\WordCountLibrary\bin\Release\netcoreapp3.1\WordCountLibrary.deps.json
+C:\Users\Zevas\source\repos\WordCountApp\WordCountLibrary\bin\Release\netcoreapp3.1\WordCountLibrary.dll
+C:\Users\Zevas\source\repos\WordCountApp\WordCountLibrary\bin\Release\netcoreapp3.1\WordCountLibrary.pdb
+C:\Users\Zevas\source\repos\WordCountApp\WordCountLibrary\obj\Release\netcoreapp3.1\WordCountLibrary.csproj.AssemblyReference.cache
+C:\Users\Zevas\source\repos\WordCountApp\WordCountLibrary\obj\Release\netcoreapp3.1\WordCountLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Zevas\source\repos\WordCountApp\WordCountLibrary\obj\Release\netcoreapp3.1\WordCountLibrary.AssemblyInfoInputs.cache
+C:\Users\Zevas\source\repos\WordCountApp\WordCountLibrary\obj\Release\netcoreapp3.1\WordCountLibrary.AssemblyInfo.cs
+C:\Users\Zevas\source\repos\WordCountApp\WordCountLibrary\obj\Release\netcoreapp3.1\WordCountLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Zevas\source\repos\WordCountApp\WordCountLibrary\obj\Release\netcoreapp3.1\WordCountLibrary.dll
+C:\Users\Zevas\source\repos\WordCountApp\WordCountLibrary\obj\Release\netcoreapp3.1\WordCountLibrary.pdb

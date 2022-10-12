@@ -1,0 +1,17 @@
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\bin\Release\netcoreapp3.1\WordCountApp.exe
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\bin\Release\netcoreapp3.1\WordCountApp.deps.json
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\bin\Release\netcoreapp3.1\WordCountApp.runtimeconfig.json
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\bin\Release\netcoreapp3.1\WordCountApp.runtimeconfig.dev.json
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\bin\Release\netcoreapp3.1\WordCountApp.dll
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\bin\Release\netcoreapp3.1\WordCountApp.pdb
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\bin\Release\netcoreapp3.1\WordCountLibrary.dll
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\bin\Release\netcoreapp3.1\WordCountLibrary.pdb
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\obj\Release\netcoreapp3.1\WordCountApp.csproj.AssemblyReference.cache
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\obj\Release\netcoreapp3.1\WordCountApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\obj\Release\netcoreapp3.1\WordCountApp.AssemblyInfoInputs.cache
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\obj\Release\netcoreapp3.1\WordCountApp.AssemblyInfo.cs
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\obj\Release\netcoreapp3.1\WordCountApp.csproj.CoreCompileInputs.cache
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\obj\Release\netcoreapp3.1\WordCountApp.csproj.CopyComplete
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\obj\Release\netcoreapp3.1\WordCountApp.dll
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\obj\Release\netcoreapp3.1\WordCountApp.pdb
+C:\Users\Zevas\source\repos\WordCountApp\WordCountApp\obj\Release\netcoreapp3.1\WordCountApp.genruntimeconfig.cache
