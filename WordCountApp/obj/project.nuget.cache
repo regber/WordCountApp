@@ -1,9 +1,23 @@
 {
   "version": 2,
-  "dgSpecHash": "RxrMtsu36kfII3i8xksHu9vFkplCgSJ3T8J0biHKOS7qgx3omOKzn1if1kd8S0swILjWpjdU4Ib5HiDUM80u8g==",
+  "dgSpecHash": "WoMgUbauNNZ/Opg8+h50jYzvG1gZsP/BmtD9gGlB/A1JHU9c3hiFCfu5UesVHFDShXzmz/8wLhj9ICQrUCmc9Q==",
   "success": true,
   "projectFilePath": "C:\\Users\\Zevas\\source\\repos\\WordCountApp\\WordCountApp\\WordCountApp.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Zevas\\.nuget\\packages\\microsoft.netcore.platforms\\2.0.0\\microsoft.netcore.platforms.2.0.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.private.servicemodel\\4.7.0\\system.private.servicemodel.4.7.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.reflection.dispatchproxy\\4.5.0\\system.reflection.dispatchproxy.4.5.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.security.accesscontrol\\4.5.0\\system.security.accesscontrol.4.5.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.security.cryptography.cng\\4.5.0\\system.security.cryptography.cng.4.5.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.security.cryptography.pkcs\\4.5.0\\system.security.cryptography.pkcs.4.5.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.security.cryptography.xml\\4.5.0\\system.security.cryptography.xml.4.5.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.security.permissions\\4.5.0\\system.security.permissions.4.5.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.security.principal.windows\\4.5.0\\system.security.principal.windows.4.5.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.servicemodel.duplex\\4.7.0\\system.servicemodel.duplex.4.7.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.servicemodel.http\\4.7.0\\system.servicemodel.http.4.7.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.servicemodel.nettcp\\4.7.0\\system.servicemodel.nettcp.4.7.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.servicemodel.primitives\\4.7.0\\system.servicemodel.primitives.4.7.0.nupkg.sha512",
+    "C:\\Users\\Zevas\\.nuget\\packages\\system.servicemodel.security\\4.7.0\\system.servicemodel.security.4.7.0.nupkg.sha512",
     "C:\\Users\\Zevas\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.23\\microsoft.netcore.app.host.win-x64.3.1.23.nupkg.sha512"
   ],
   "logs": []

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Collections.Concurrent;
-using System.Threading;
+using System.Text;
 
 namespace WordCountLibrary
 {
@@ -22,7 +22,19 @@ namespace WordCountLibrary
         {
             Regex separator = new Regex(@"(?<tag>(<(\S*?)>)|(<+?.*?>+?))|(?<word>([a-я']{1,}))", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-            return separator.Matches(text).Where(m => m.Groups["word"].Value != string.Empty).Select(m => m.Value.ToLower());
+            List<string> words = new List<string>();
+
+            var matches = separator.Matches(text);
+
+            for(int i=0;i< matches.Count;i++)
+            {
+                if(matches[i].Groups["word"].Value != string.Empty)
+                {
+                    words.Add(matches[i].Value.ToLower());
+                }
+            }
+
+            return words;
         }
 
 
@@ -42,36 +54,20 @@ namespace WordCountLibrary
             }
         }
 
-        /// <summary>
-        /// Подсчитывает количество слов в текстовом файле
-        /// </summary>
-        /// <param name="filePath">путь к текстовому файлу</param>
-        /// <returns></returns>
-        private static Dictionary<string, int> CountingWordsInFile(string filePath)
-        {
-            var countedWords = new Dictionary<string, int>();
-            var concurDir = new ConcurrentDictionary<string, int>();
-
-            var text = File.ReadAllText(filePath);
-
-            CountingUniqueWords(text, concurDir);
-
-            countedWords = concurDir.OrderByDescending(pair => pair.Value).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-            return countedWords;
-        }
 
         /// <summary>
         /// Подсчитывает количество слов в текстовом файле в несколько потоков
         /// </summary>
         /// <param name="filePath">путь к текстовому файлу</param>
         /// <returns></returns>
-        public static Dictionary<string, int> CountingWordsInFileMultThrd(string filePath)
+        public static Dictionary<string, int> CountingWordsInFileMultThrd(byte[] fileByteArr)
         {
             var countedWords = new Dictionary<string, int>();
             var concurDir = new ConcurrentDictionary<string, int>();
 
-            var lines = File.ReadAllLines(filePath);
+            var text = Encoding.UTF8.GetString(fileByteArr);
+
+            var lines = text.Split(new[] { '\r', '\n' });
 
             var textBlockSize = 1000;
             var textBlockCount = (int)Math.Ceiling((double)(lines.Length / textBlockSize)) + 1;

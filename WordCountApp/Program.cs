@@ -1,30 +1,22 @@
 ﻿using System;
-using WordCountLibrary;
 using System.Threading.Tasks;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using WordCountServiceReference;
+
 
 namespace WordCountApp
 {
     class Program
     {
-        static Stopwatch sw = new Stopwatch();
         static Stopwatch swMultThrd = new Stopwatch();
-
-        static List<Dictionary<string, int>> wordDictionaries = new List<Dictionary<string, int>>();
+        static WordCountServiceClient client = new WordCountServiceClient();
 
         static void Main(string[] filePaths)
         {
             Console.WriteLine("Start!");
-
-            //В один поток
-            sw.Start();
-
-            CountingWordsInFiles(filePaths);
-
-            sw.Stop();
 
             //В несколько потоков
             swMultThrd.Start();
@@ -33,37 +25,15 @@ namespace WordCountApp
 
             swMultThrd.Stop();
 
-            Console.WriteLine($"Time spent for one thread: {sw.ElapsedMilliseconds} milliseconds");
             Console.WriteLine($"Time spent for multi thread: {swMultThrd.ElapsedMilliseconds} milliseconds");
-            Console.WriteLine($"Time spent delta: {Math.Abs(sw.ElapsedMilliseconds- swMultThrd.ElapsedMilliseconds)} milliseconds");
 
-            SaveWordDictionariesToFiles(wordDictionaries, filePaths);
+            //SaveWordDictionariesToFiles(wordDictionaries, filePaths);
 
             Console.WriteLine("Completed!");
 
             Console.ReadLine();
         }
 
-        /// <summary>
-        /// Подсчитывает количество слов в текстовых файлах
-        /// </summary>
-        /// <param name="filePaths">Массив путей к текстовым файлам</param>
-        /// <returns></returns>
-        private static void CountingWordsInFiles(string[] filePaths)
-        {
-            var type = typeof(WordCounter);
-
-            var methods = type.GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-
-            var countingWordsInFileMethod = methods[2];
-
-            wordDictionaries.Clear();
-
-            foreach (var filePath in filePaths)
-            {
-                wordDictionaries.Add((Dictionary<string, int>)countingWordsInFileMethod.Invoke(null, new object[] { filePath }));
-            }
-        }
 
         /// <summary>
         /// Подсчитывает количество слов в текстовых файлах  в несколько потоков
@@ -72,11 +42,32 @@ namespace WordCountApp
         /// <returns></returns>
         private static void CountingWordsInFilesMultThrd(string[] filePaths)
         {
-            wordDictionaries.Clear();
-
-            foreach (var filePath in filePaths)
+            try
             {
-                wordDictionaries.Add(WordCounter.CountingWordsInFileMultThrd(filePath));
+                // проверка соединения
+
+                if (!string.Equals(client.TestConnection(), "ConnectionSuccessful", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    throw new Exception("Проверка соединения не удалась");
+                }
+
+                foreach (var filePath in filePaths)
+                {
+                    var textByteArray = File.ReadAllBytes(filePath);
+
+                    var wordDictionary = client.CountingWordsInFileMultThrd(textByteArray);//метод из сервиса
+
+                    SaveWordDictionariesToFiles(wordDictionary, filePath);
+                }
+            }
+            catch(Exception ex)
+            {
+                // в случае ошибки необходимо принудительно закрыть клиент методом Abort()
+                client.Abort();
+
+                // выводим информацию об ошибке
+                Console.WriteLine();
+                Console.WriteLine("Ошибка: {0}", ex.Message);
             }
         }
 
@@ -88,19 +79,15 @@ namespace WordCountApp
         /// <typeparam name="TValue">Значение хранящие количество слов</typeparam>
         /// <param name="pairsCollection">Словарь хранящий слова в качестве ключей и их количество в качестве значениий</param>
         /// <param name="path">Место сохранения файла</param>
-        private static void SaveWordDictionariesToFiles<TKey, TValue>(List<Dictionary<TKey, TValue>> pairsCollections, string[] paths)
+        private static void SaveWordDictionariesToFiles<TKey, TValue>(Dictionary<TKey, TValue> pairsCollection, string path)
         {
-            for(int idx=0; idx < pairsCollections.Count; idx++)
+            using (StreamWriter writer = new StreamWriter($"Counted words in {Path.GetFileNameWithoutExtension(path)}.txt"))
             {
-                using (StreamWriter writer = new StreamWriter($"Counted words in {Path.GetFileNameWithoutExtension(paths[idx])}.txt"))
+                foreach (var pair in pairsCollection)
                 {
-                    foreach (var pair in pairsCollections[idx])
-                    {
-                        writer.WriteLine($"{pair.Key}-{pair.Value}");
-                    }
+                    writer.WriteLine($"{pair.Key}-{pair.Value}");
                 }
             }
-
         }
     }
 }

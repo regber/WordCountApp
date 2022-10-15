@@ -1,0 +1,7 @@
+C:\Users\Zevas\source\repos\WordCountApp\WordCountService\bin\WordCountService.dll.config
+C:\Users\Zevas\source\repos\WordCountApp\WordCountService\bin\WordCountService.dll
+C:\Users\Zevas\source\repos\WordCountApp\WordCountService\bin\WordCountService.pdb
+C:\Users\Zevas\source\repos\WordCountApp\WordCountService\obj\Release\WordCountService.csproj.AssemblyReference.cache
+C:\Users\Zevas\source\repos\WordCountApp\WordCountService\obj\Release\WordCountService.csproj.CoreCompileInputs.cache
+C:\Users\Zevas\source\repos\WordCountApp\WordCountService\obj\Release\WordCountService.dll
+C:\Users\Zevas\source\repos\WordCountApp\WordCountService\obj\Release\WordCountService.pdb
