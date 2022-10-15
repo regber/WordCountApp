@@ -65,7 +65,7 @@ namespace WordCountLibrary
             var countedWords = new Dictionary<string, int>();
             var concurDir = new ConcurrentDictionary<string, int>();
 
-            var text = Encoding.UTF8.GetString(fileByteArr);
+            var text = Encoding.Unicode.GetString(fileByteArr);
 
             var lines = text.Split(new[] { '\r', '\n' });
 

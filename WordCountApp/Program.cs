@@ -5,7 +5,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using WordCountServiceReference;
-
+using System.Text;
 
 namespace WordCountApp
 {
@@ -53,7 +53,7 @@ namespace WordCountApp
 
                 foreach (var filePath in filePaths)
                 {
-                    var textByteArray = File.ReadAllBytes(filePath);
+                    var textByteArray = Encoding.Unicode.GetBytes(File.ReadAllText(filePath));
 
                     var wordDictionary = client.CountingWordsInFileMultThrd(textByteArray);//метод из сервиса
 
