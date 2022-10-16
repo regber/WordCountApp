@@ -1,31 +1,27 @@
 ﻿using System;
-using WordCountLibrary;
 using System.Threading.Tasks;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
+using System.Net;
+using System.Text.Json;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace WordCountApp
 {
     class Program
     {
-        static Stopwatch sw = new Stopwatch();
         static Stopwatch swMultThrd = new Stopwatch();
 
-        static List<Dictionary<string, int>> wordDictionaries = new List<Dictionary<string, int>>();
 
         static void Main(string[] filePaths)
         {
             Console.WriteLine("Start!");
 
-            //В один поток
-            sw.Start();
-
-            CountingWordsInFiles(filePaths);
-
-            sw.Stop();
-
+            filePaths = new string[] { "tolstoj_lew_nikolaewich-text_0073.fb2" };
             //В несколько потоков
             swMultThrd.Start();
 
@@ -33,37 +29,15 @@ namespace WordCountApp
 
             swMultThrd.Stop();
 
-            Console.WriteLine($"Time spent for one thread: {sw.ElapsedMilliseconds} milliseconds");
-            Console.WriteLine($"Time spent for multi thread: {swMultThrd.ElapsedMilliseconds} milliseconds");
-            Console.WriteLine($"Time spent delta: {Math.Abs(sw.ElapsedMilliseconds- swMultThrd.ElapsedMilliseconds)} milliseconds");
 
-            SaveWordDictionariesToFiles(wordDictionaries, filePaths);
+            Console.WriteLine($"Time spent: {swMultThrd.ElapsedMilliseconds} milliseconds");
+
 
             Console.WriteLine("Completed!");
 
             Console.ReadLine();
         }
 
-        /// <summary>
-        /// Подсчитывает количество слов в текстовых файлах
-        /// </summary>
-        /// <param name="filePaths">Массив путей к текстовым файлам</param>
-        /// <returns></returns>
-        private static void CountingWordsInFiles(string[] filePaths)
-        {
-            var type = typeof(WordCounter);
-
-            var methods = type.GetMethods(System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-
-            var countingWordsInFileMethod = methods[2];
-
-            wordDictionaries.Clear();
-
-            foreach (var filePath in filePaths)
-            {
-                wordDictionaries.Add((Dictionary<string, int>)countingWordsInFileMethod.Invoke(null, new object[] { filePath }));
-            }
-        }
 
         /// <summary>
         /// Подсчитывает количество слов в текстовых файлах  в несколько потоков
@@ -72,11 +46,79 @@ namespace WordCountApp
         /// <returns></returns>
         private static void CountingWordsInFilesMultThrd(string[] filePaths)
         {
-            wordDictionaries.Clear();
+            if(!TestConnectToAPI())
+            {
+                return;
+            }
 
             foreach (var filePath in filePaths)
             {
-                wordDictionaries.Add(WordCounter.CountingWordsInFileMultThrd(filePath));
+
+                var text = File.ReadAllText(filePath);
+
+                var wordDictionaries = GetCountingWordsInFileFromAPI(text);
+
+                SaveWordDictionariesToFiles(wordDictionaries, filePath);
+            }
+        }
+
+        /// <summary>
+        /// Подсчитать слова в тексте
+        /// </summary>
+        /// <param name="text">Текст</param>
+        /// <returns></returns>
+        private static Dictionary<string,int> GetCountingWordsInFileFromAPI(string text)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:44360");
+
+                var textbase64 = Base64.Encode(text);
+
+                var stringContent = @"""" + textbase64 + @"""";
+
+                var content = new StringContent(stringContent, Encoding.UTF8, "application/json");
+
+                content.Headers.ContentLength = stringContent.Length;
+
+                var result = client.PostAsync("/api/WordCounter/GetWordDictionary", content);
+
+                string resultContent = result.Result.Content.ReadAsStringAsync().Result;
+
+                var wordDictionaries = JsonSerializer.Deserialize<Dictionary<string, int>>(Base64.Decode(resultContent));
+
+                return wordDictionaries;
+            }
+        }
+
+        /// <summary>
+        /// Проверить наличие соединения с API
+        /// </summary>
+        /// <returns></returns>
+        private static bool TestConnectToAPI()
+        {
+            try 
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri("https://localhost:44360");
+
+                    var result = client.GetAsync("/api/WordCounter/TestConnect");
+
+                    string resultContent = result.Result.Content.ReadAsStringAsync().Result;
+
+                    if(resultContent!= "ConnectionSuccessful")
+                    {
+                        throw new Exception("API не отвечает");
+                    }
+                }
+
+                return true;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Ошибка: {ex.Message}") ;
+                return false;
             }
         }
 
@@ -88,19 +130,34 @@ namespace WordCountApp
         /// <typeparam name="TValue">Значение хранящие количество слов</typeparam>
         /// <param name="pairsCollection">Словарь хранящий слова в качестве ключей и их количество в качестве значениий</param>
         /// <param name="path">Место сохранения файла</param>
-        private static void SaveWordDictionariesToFiles<TKey, TValue>(List<Dictionary<TKey, TValue>> pairsCollections, string[] paths)
+        private static void SaveWordDictionariesToFiles<TKey, TValue>(Dictionary<TKey, TValue> pairsCollection, string path)
         {
-            for(int idx=0; idx < pairsCollections.Count; idx++)
+            using (StreamWriter writer = new StreamWriter($"Counted words in {Path.GetFileNameWithoutExtension(path)}.txt"))
             {
-                using (StreamWriter writer = new StreamWriter($"Counted words in {Path.GetFileNameWithoutExtension(paths[idx])}.txt"))
+                foreach (var pair in pairsCollection)
                 {
-                    foreach (var pair in pairsCollections[idx])
-                    {
-                        writer.WriteLine($"{pair.Key}-{pair.Value}");
-                    }
+                    writer.WriteLine($"{pair.Key}-{pair.Value}");
                 }
             }
-
         }
     }
+
+    public static class Base64
+    {
+        public static string Encode(string text)
+        {
+            var plainTextBytes = Encoding.UTF8.GetBytes(text);
+
+            return Convert.ToBase64String(plainTextBytes);
+        }
+
+        public static string Decode(string base64EncodedData)
+        {
+            var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
+
+            return Encoding.UTF8.GetString(base64EncodedBytes);
+        }
+    }
+
+
 }

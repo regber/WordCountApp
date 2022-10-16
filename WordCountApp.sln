@@ -5,7 +5,9 @@ VisualStudioVersion = 16.0.32510.428
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordCountLibrary", "WordCountLibrary\WordCountLibrary.csproj", "{D6854356-3533-4DD3-9AEF-2FE48F5E51F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordCountApp", "WordCountApp\WordCountApp.csproj", "{3DB0A987-8C65-431D-8DB6-48F70E27FD6A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WordCountApp", "WordCountApp\WordCountApp.csproj", "{3DB0A987-8C65-431D-8DB6-48F70E27FD6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordCountWebAPI", "WordCountWebAPI\WordCountWebAPI.csproj", "{0A664108-0EB3-4E53-94FE-36CC52075398}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{3DB0A987-8C65-431D-8DB6-48F70E27FD6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3DB0A987-8C65-431D-8DB6-48F70E27FD6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3DB0A987-8C65-431D-8DB6-48F70E27FD6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A664108-0EB3-4E53-94FE-36CC52075398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A664108-0EB3-4E53-94FE-36CC52075398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A664108-0EB3-4E53-94FE-36CC52075398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A664108-0EB3-4E53-94FE-36CC52075398}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

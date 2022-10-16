@@ -48,12 +48,12 @@ namespace WordCountLibrary
         /// </summary>
         /// <param name="filePath">путь к текстовому файлу</param>
         /// <returns></returns>
-        public static Dictionary<string, int> CountingWordsInFileMultThrd(byte[] textByteArray)
+        public static Dictionary<string, int> CountingWordsInFileMultThrd(string base64Data)
         {
             var countedWords = new Dictionary<string, int>();
             var concurDir = new ConcurrentDictionary<string, int>();
 
-            var text = Encoding.Unicode.GetString(textByteArray);
+            var text = Base64.Decode(base64Data);
 
             var lines = text.Split(new[] { '\r', '\n' });
 
@@ -69,6 +69,23 @@ namespace WordCountLibrary
             countedWords = concurDir.OrderByDescending(pair => pair.Value).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             return countedWords;
+        }
+    }
+
+    public static class Base64
+    {
+        public static string Encode(string text)
+        {
+            var plainTextBytes = Encoding.UTF8.GetBytes(text);
+
+            return Convert.ToBase64String(plainTextBytes);
+        }
+
+        public static string Decode(string base64EncodedData)
+        {
+            var base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
+
+            return Encoding.UTF8.GetString(base64EncodedBytes);
         }
     }
 }
